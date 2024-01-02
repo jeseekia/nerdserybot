@@ -1,19 +1,20 @@
 const tmi = require('tmi.js');
 const https = require('https');
+require('dotenv').config();
 
 // Define configuration options
 const opts = {
   identity: {
-    username: 'thenerdsery',
-    password: 'oauth:e8jbl0lcevmzyi8ao77dekc7q3tlga'
+    username: process.env.ACCOUNT_USERNAME,
+    password: process.env.PASSWORD
   },
   channels: [
-    'metadevgirl'
+    process.env.INTERACTION_CHANNEL
   ]
 };
 
 const webhook = {
-  url:'https://discordapp.com/api/webhooks/823394288175808533/CS7AxCmFMYAtpgw-lAB2uIj0ac3KnUssrJqQpJUrqQd0myk2ugMjFIKMGCgFbw6qHZJU'
+  url: process.env.WEBHOOK_URL
 }
 
 // Create a client with our options
