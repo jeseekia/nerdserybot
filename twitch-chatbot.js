@@ -25,7 +25,11 @@ client.on('message', onMessageHandler);
 client.on('connected', onConnectedHandler);
 
 // Connect to Twitch:
-client.connect();
+client.connect().catch((error) => {
+  console.log(error);
+  //Attempt token refresh
+  
+});
 
 // Agenda item store
 agendaItems = [];
