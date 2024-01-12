@@ -1,6 +1,63 @@
 const tmi = require('tmi.js');
 const https = require('https');
+const { exec } = require('child_process');
 require('dotenv').config();
+
+// Perform Twitch Device Code Grant Flow using Curly
+// curl --location 'https://id.twitch.tv/oauth2/device'\
+// --form'client_id="<clientID>"'\
+// --form'scopes="<scopes>"'
+let device_curl_command = `curl --location 'https://id.twitch.tv/oauth2/device' --form client_id=${process.env.TWITCH_CLIENT_ID} --form scopes="chat:read chat:edit"`
+let token_curl_command = `curl --location 'https://id.twitch.tv/oauth2/token' --form client_id=${TWITCH_CLIENT_ID} --form scope="chat:read chat:edit" --form device_code=${TWITCH_DEVICE_CODE} --form grant_type="urn:ietf:params:oauth:grant-type:device_code"`
+
+exec(curl_command, (error, stdout, stderr) => {
+  if (error) {
+    console.log("Error: Could not process curl command for device code and verification uri");
+    console.error(`Error: ${error}`);
+    return;
+  }
+  if (stderr) {
+    console.log("Stderr: ");
+    console.error(`stderr: ${stderr}`);
+    // return;
+  }
+  console.log(`stdout: ${stdout}`);
+  // process.env.TWITCH_DEVICE_CODE = stdout.device_code;
+  //Wait for user to verify
+
+  //Execute token_curl_command
+
+  // process.env.TWITCH_OAUTH_TOKEN = access_token;
+  // process.env.TWITCH_REFRESH_TOKEN = refresh_token;
+});
+
+// {
+//   "device_code": "ike3GM8QIdYZs43KdrWPIO36LofILoCyFEzjlQ91",
+//   "expires_in": 1800,
+//   "interval": 5,
+//   "user_code": "ABCDEFGH",
+//   "verification_uri": "https://www.twitch.tv/activate?public=true&device-code=ABCDEFGH"
+// }
+
+
+// curl --location 'https://id.twitch.tv/oauth2/token'\
+//     --form'client_id="<client_id>"'\
+//     --form'scope="<scope>"'\
+//     --form'device_code="<device_code>"'\
+//     --form'grant_type="urn:ietf:params:oauth:grant-type:device_code"'
+
+
+// {
+//   "access_token": "<access_token>",
+//   "expires_in": <some_int_value>,
+//   "refresh_token": "<refresh_token>",
+//   "scope": [
+//       "<scopes>"
+//   ],
+//   "token_type": "bearer"
+// }
+
+// Store tokens
 
 // Define configuration options
 const opts = {
@@ -26,6 +83,7 @@ client.on('connected', onConnectedHandler);
 
 // Connect to Twitch:
 client.connect().catch((error) => {
+  console.log("Could not connect to Twitch");
   console.log(error);
   //Attempt token refresh
   
@@ -145,3 +203,8 @@ function generateAgenda(items){
   }
   return items.toString();
 }
+
+
+// curl -X POST 'https://id.twitch.tv/oauth2/device' \
+// -H 'Content-Type: application/x-www-form-urlencoded' \
+// -d 'client_id=<Your client id here>&scopes=chat:read chat:edit'
